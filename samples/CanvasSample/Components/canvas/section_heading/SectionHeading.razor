@@ -1,0 +1,20 @@
+@switch (Level)
+{
+    case "h3":
+        <h3 class="section-heading">@Heading</h3>
+        break;
+    case "h4":
+        <h4 class="section-heading">@Heading</h4>
+        break;
+    default:
+        <h2 class="section-heading">@Heading</h2>
+        break;
+}
+
+@code {
+    [Parameter]
+    public string? Heading { get; set; }
+
+    [Parameter]
+    public string Level { get; set; } = "h2";
+}

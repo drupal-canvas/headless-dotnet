@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/CanvasSample/CanvasSample.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/DrupalCanvas.Headless.AspNetCore/DrupalCanvas.Headless.AspNetCore.csproj" />
     <Project Path="src/DrupalCanvas.Headless/DrupalCanvas.Headless.csproj" />

@@ -23,7 +23,9 @@ namespace DrupalCanvas.Headless.AspNetCore;
 /// </summary>
 public sealed class DraftSession : ComponentBase
 {
-    private const string AssetBase = "_content/DrupalCanvas.Headless.AspNetCore";
+    // Absolute: the page can render at any Drupal path depth, so a relative
+    // asset URL would resolve against the routed page's own path and 404.
+    private const string AssetBase = "/_content/DrupalCanvas.Headless.AspNetCore";
 
     /// <summary>
     /// The app route that redeems a fresh assertion into the session; align

@@ -1,0 +1,21 @@
+name: Hero
+machineName: hero
+status: true
+required:
+  - heading
+props:
+  properties:
+    heading:
+      title: Heading
+      type: string
+      examples:
+        - Welcome to the sample
+    subheading:
+      title: Subheading
+      type: string
+      examples:
+        - Rendered by ASP.NET Core and Blazor.
+slots:
+  content:
+    title: Content
+    description: Components shown under the hero copy.

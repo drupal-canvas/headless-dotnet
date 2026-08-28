@@ -1,0 +1,19 @@
+<section class="hero">
+    <h1>@Heading</h1>
+    @if (!string.IsNullOrEmpty(Subheading))
+    {
+        <p class="hero-sub">@Subheading</p>
+    }
+    <div class="hero-content">@Content</div>
+</section>
+
+@code {
+    [Parameter]
+    public string? Heading { get; set; }
+
+    [Parameter]
+    public string? Subheading { get; set; }
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+}

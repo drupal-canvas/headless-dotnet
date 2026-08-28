@@ -1,0 +1,75 @@
+@* The document shell for one Drupal-resolved page: document head from the
+   Canvas content API's Unhead-shaped data, the rendered component tree, and
+   the draft session chrome. *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(Page?.Head.Title ?? "Not found")</title>
+    @if (Page?.Head.Meta is { } metaTags)
+    {
+        foreach (var meta in metaTags)
+        {
+            <meta @attributes="ToAttributes(meta)" />
+        }
+    }
+    @if (Page?.Head.Link is { } linkTags)
+    {
+        foreach (var link in linkTags)
+        {
+            <link @attributes="ToAttributes(link)" />
+        }
+    }
+    <style>
+        body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 0; color: #1c1e21; }
+        main { max-width: 44rem; margin: 0 auto; padding: 2.5rem 1.5rem; }
+        .hero { background: #f0f4ff; padding: 3rem 1.5rem; text-align: center; }
+        .hero h1 { margin: 0 0 .5rem; font-size: 2.25rem; }
+        .hero-sub { margin: 0; color: #4a5568; font-size: 1.15rem; }
+        .hero-content { margin-top: 1.5rem; }
+        .section-heading { margin: 2rem 0 .75rem; }
+        .rich-text :first-child { margin-top: 0; }
+        .draft-banner { position: fixed; inset: auto 0 0 0; background: #1c1e21; color: #fff;
+            padding: .5rem 1rem; font-size: .875rem; display: flex; gap: .75rem; align-items: center; }
+        .draft-banner a, .draft-banner button { color: #9cc2ff; background: none; border: none;
+            font: inherit; text-decoration: underline; cursor: pointer; }
+    </style>
+</head>
+<body>
+    @if (Page is { } page)
+    {
+        <main>
+            <CanvasComponentTree Tree="page.Content" />
+        </main>
+    }
+    else
+    {
+        <main>
+            <h1>Not found</h1>
+            <p>Drupal answered nothing for <code>@Path</code>.</p>
+        </main>
+    }
+    <DraftSession>
+        <div data-draft-session-view="active" class="draft-banner">
+            <span>Draft preview</span>
+            <form method="post" action="/api/disable-draft"><button type="submit">Exit</button></form>
+        </div>
+        <div data-draft-session-view="expired" class="draft-banner">
+            <span>The preview session ended.</span>
+            <a data-draft-session-renew-link href="#">Renew session</a>
+        </div>
+    </DraftSession>
+</body>
+</html>
+
+@code {
+    [Parameter]
+    public Page? Page { get; set; }
+
+    [Parameter]
+    public string Path { get; set; } = "/";
+
+    private static Dictionary<string, object> ToAttributes(IReadOnlyDictionary<string, string> attributes)
+        => attributes.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
+}
