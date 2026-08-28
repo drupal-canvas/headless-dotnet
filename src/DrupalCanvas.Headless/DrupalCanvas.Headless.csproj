@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Framework-agnostic core of the Drupal Canvas Headless SDK for .NET: draft preview sessions, draft-aware content fetching, and component metadata exposure for decoupled frontend apps. A C# port of the @drupal-canvas/headless npm package's server side.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
+  </ItemGroup>
+
+</Project>
