@@ -99,7 +99,16 @@ dotnet test
 ## Status and roadmap
 
 Done: protocol core with ported conformance suite; ASP.NET Core endpoints,
-middleware, renderer, registry, client assets.
+middleware, renderer, registry, client assets; the `samples/CanvasSample`
+app.
+
+Verified live against a Drupal Canvas Headless site inside the Canvas
+editor (via `samples/CanvasSample`): component sync, draft activation from
+a Drupal-minted assertion, CHIPS cookies in the cross-site editor iframe,
+marker-driven geometry (region and slot drop targets, component selection
+overlays), prop editing with auto-save refresh of working copies,
+publishing with marker-free anonymous output, and the exit flow deleting
+partitioned cookies in a real browser.
 
 Not yet done:
 
@@ -112,7 +121,6 @@ Not yet done:
   document do not.
 - In-place data refresh on Canvas auto-save (the static-assets glue reloads
   the document; Blazor enhanced navigation could do better).
-- Browser verification inside the Canvas editor (cookie partitioning cannot
-  be exercised by curl or TestServer — verify activation, renewal, and exit
-  in a real embedded session before any release).
+- Live verification of in-place renewal (the token must approach expiry;
+  the flow is covered by the ported unit and endpoint tests).
 - NuGet packaging/publishing metadata and CI.
