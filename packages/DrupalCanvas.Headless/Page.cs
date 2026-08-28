@@ -109,7 +109,13 @@ public sealed record DrupalRoute
     [JsonPropertyName("requestUri")]
     public required string RequestUri { get; init; }
 
+    /// <summary>
+    /// Route parameters. Drupal serializes an empty parameter map as a JSON
+    /// array (<c>[]</c>, PHP's empty-array ambiguity), so the converter
+    /// accepts both shapes.
+    /// </summary>
     [JsonPropertyName("params")]
+    [JsonConverter(typeof(EmptyArrayTolerantDictionaryConverter))]
     public IReadOnlyDictionary<string, string> Params { get; init; } =
         new Dictionary<string, string>();
 
@@ -210,6 +216,31 @@ internal sealed class CanvasSlotJsonConverter : JsonConverter<CanvasSlot>
                 break;
         }
     }
+}
+
+/// <summary>
+/// Reads a string map that PHP may have serialized as <c>[]</c> when empty.
+/// </summary>
+internal sealed class EmptyArrayTolerantDictionaryConverter
+    : JsonConverter<IReadOnlyDictionary<string, string>>
+{
+    public override IReadOnlyDictionary<string, string> Read(
+        ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.StartArray)
+        {
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+            {
+                throw new JsonException("A non-empty array is not a parameter map.");
+            }
+            return new Dictionary<string, string>();
+        }
+        return JsonSerializer.Deserialize<Dictionary<string, string>>(ref reader, options)!;
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer, IReadOnlyDictionary<string, string> value, JsonSerializerOptions options)
+        => JsonSerializer.Serialize(writer, value, options);
 }
 
 /// <summary>Shared serializer options for the Canvas wire formats.</summary>

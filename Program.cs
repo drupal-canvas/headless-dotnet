@@ -11,7 +11,12 @@ builder.Configuration.AddDotEnvFile();
 
 builder.Services.AddRazorComponents();
 builder.Services.AddDrupalCanvasHeadless(options =>
-    options.BaseUrl = builder.Configuration["CANVAS_SITE_URL"]);
+{
+    options.BaseUrl = builder.Configuration["CANVAS_SITE_URL"];
+    // The editor's component thumbnails render in an isolated document; give
+    // it the app's stylesheet so components look the way they do on pages.
+    options.ComponentPreviewStylesheets.Add("/css/app.css");
+});
 builder.Services.AddDrupalCanvasComponents(components => components
     // Explicit registrations for the components whose class cannot share the
     // machine name: a C# property may not be named after its own class, and

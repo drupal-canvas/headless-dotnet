@@ -180,6 +180,18 @@ public class PageJsonTests
     }
 
     [Fact]
+    public void Route_params_accept_phps_empty_array_shape()
+    {
+        // Drupal serializes an empty parameter map as [] (PHP's empty-array
+        // ambiguity); routes such as /user/login answer exactly this.
+        var page = Assert.IsType<Page>(PageResult.Parse(
+            """
+            {"content":null,"head":{"title":"Log in"},"route":{"name":"user.login","requestUri":"/user/login","params":[],"managedByCanvas":false,"entity":null}}
+            """));
+        Assert.Empty(page.Route.Params);
+    }
+
+    [Fact]
     public void PageResult_parse_distinguishes_redirects_by_shape()
     {
         Assert.IsType<PageRedirect>(PageResult.Parse(

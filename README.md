@@ -44,6 +44,12 @@ CSS 4; the generated file is committed).
   `DraftBanner` session chrome.
 - **The component metadata endpoint** Canvas syncs the library from, protected
   by proof-by-redemption.
+- **Component preview thumbnails**: the editor renders each library entry
+  through an isolated one-component document
+  (`/api/canvas/component-preview`, draft-session-only). The app names the
+  stylesheets that document loads via
+  `CanvasHeadlessOptions.ComponentPreviewStylesheets`, so thumbnails match
+  how components look on pages.
 
 ## The packages
 
@@ -80,10 +86,6 @@ dotnet test packages/DrupalCanvas.Headless.slnx
 
 Not yet done:
 
-- The isolated one-component preview document (`/api/canvas/component-preview`,
-  for editor thumbnails) — the core method
-  `DraftServer.FetchComponentPreviewAsync` exists; the route and minimal HTML
-  document do not.
 - In-place data refresh on Canvas auto-save (the client glue reloads the
   document; Blazor enhanced navigation could do better).
 - Live verification of in-place renewal (the token must approach expiry; the

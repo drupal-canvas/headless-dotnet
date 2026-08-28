@@ -17,6 +17,14 @@ public sealed class CanvasHeadlessOptions
     /// resolved from. Defaults to the host's content root.
     /// </summary>
     public string? ProjectRoot { get; set; }
+
+    /// <summary>
+    /// Stylesheet URLs the isolated component preview document (editor
+    /// thumbnails) loads, so components render there with the app's styles.
+    /// The JavaScript adapters inject the app's global stylesheet through
+    /// their bundlers; here the app names it (e.g. <c>/css/app.css</c>).
+    /// </summary>
+    public IList<string> ComponentPreviewStylesheets { get; } = [];
 }
 
 public static class CanvasHeadlessServiceCollectionExtensions

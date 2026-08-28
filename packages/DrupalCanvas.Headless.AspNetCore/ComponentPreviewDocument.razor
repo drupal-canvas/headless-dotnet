@@ -1,0 +1,40 @@
+@* The isolated one-component preview document the Canvas editor loads for
+   library thumbnails: a minimal page with nothing but the rendered
+   component, the app's stylesheets, and the draft session element (which
+   speaks the editor protocol and reports content height). The counterpart
+   of the Astro adapter's ComponentPreviewPage. *@
+@using DrupalCanvas.Headless
+@namespace DrupalCanvas.Headless.AspNetCore
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            background: white;
+        }
+    </style>
+    @foreach (var stylesheet in Stylesheets)
+    {
+        <link rel="stylesheet" href="@stylesheet" />
+    }
+</head>
+<body>
+    <main data-canvas-component-preview-document>
+        <CanvasComponentTree Tree="Tree" />
+        <DraftSession />
+    </main>
+</body>
+</html>
+
+@code {
+    [Parameter]
+    public CanvasComponentTreeElement? Tree { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<string> Stylesheets { get; set; } = [];
+}
