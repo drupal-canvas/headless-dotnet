@@ -12,8 +12,15 @@ builder.Configuration.AddDotEnvFile();
 builder.Services.AddRazorComponents();
 builder.Services.AddDrupalCanvasHeadless(options =>
     options.BaseUrl = builder.Configuration["CANVAS_SITE_URL"]);
-builder.Services.AddDrupalCanvasComponents(components =>
-    components.AddFromAssembly(typeof(Program).Assembly, builder.Environment.ContentRootPath));
+builder.Services.AddDrupalCanvasComponents(components => components
+    // Explicit registrations for the components whose class cannot share the
+    // machine name: a C# property may not be named after its own class, and
+    // these components carry a prop named exactly like the component.
+    .Add<CanvasSample.Canvas.HeadingComponent>("heading")
+    .Add<CanvasSample.Canvas.ImageComponent>("image")
+    .Add<CanvasSample.Canvas.TextComponent>("text")
+    .Add<CanvasSample.Canvas.VideoComponent>("video")
+    .AddFromAssembly(typeof(Program).Assembly, builder.Environment.ContentRootPath));
 
 var app = builder.Build();
 

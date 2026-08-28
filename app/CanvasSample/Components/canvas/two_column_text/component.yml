@@ -1,38 +1,58 @@
-name: Hero
-machineName: hero
+name: Two Column Text
+machineName: two_column_text
 status: true
 required:
-  - backgroundImage
   - layout
+  - columnWidths
+  - headingElement
   - headingSize
   - textColor
 props:
   properties:
-    backgroundImage:
-      title: Background Image
+    image:
+      title: Image
       type: object
       examples:
-        - src: https://placehold.co/1920x1080@2x.png
+        - src: >-
+            https://placehold.co/800x600@2x.png?alternateWidths=https%3A%2F%2Fplacehold.co%2F%7Bwidth%7Dx%7Bheight%7D%402x.png
           alt: Example image placeholder
-          width: 1920
-          height: 1080
+          width: 800
+          height: 600
       $ref: json-schema-definitions://canvas.module/image
     layout:
       title: Layout
       type: string
       examples:
-        - left_aligned
+        - text_image
       enum:
-        - left_aligned
-        - centered
+        - text_image
+        - image_text
       meta:enum:
-        left_aligned: Left aligned
-        centered: Centered
+        text_image: Text - Image
+        image_text: Image - Text
+    columnWidths:
+      title: Column Widths
+      type: string
+      examples:
+        - '50_50'
+      enum:
+        - '33_66'
+        - '50_50'
+        - '66_33'
+      meta:enum:
+        '33_66': Text 33% - Image 66%
+        '50_50': Text 50% - Image 50%
+        '66_33': Text 66% - Image 33%
     preHeading:
       title: Pre Heading
       type: string
       examples:
         - Mission
+    heading:
+      title: Heading
+      type: string
+      examples:
+        - This space deserves a hero.
     headingElement:
       title: Heading Element
       type: string
@@ -56,7 +76,7 @@ props:
       title: Heading Size
       type: string
       examples:
-        - extra_large
+        - large
       enum:
         - extra_large
         - large
@@ -67,11 +87,6 @@ props:
         large: Large
         medium: Medium
         small: Small
-    heading:
-      title: Heading
-      type: string
-      examples:
-        - This space deserves a hero.
     text:
       title: Text
       type: string

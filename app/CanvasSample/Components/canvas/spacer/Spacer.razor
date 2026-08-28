@@ -1,0 +1,16 @@
+@namespace CanvasSample.Canvas
+
+<div class="@Heights.GetValueOrDefault(Height)" aria-hidden="true"></div>
+
+@code {
+    [Parameter]
+    public string Height { get; set; } = "small";
+
+    private static readonly Dictionary<string, string> Heights = new()
+    {
+        ["small"] = "h-8",
+        ["medium"] = "h-12",
+        ["large"] = "h-16",
+        ["extra_large"] = "h-24",
+    };
+}

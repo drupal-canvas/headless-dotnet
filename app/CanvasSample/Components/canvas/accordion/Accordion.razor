@@ -1,0 +1,31 @@
+@namespace CanvasSample.Canvas
+
+<div class="@Css.Cx(
+        "w-full",
+        Variant == "separated" ? "flex flex-col gap-2" : null,
+        Variant == "default" ? BorderClasses.GetValueOrDefault(BorderColor) : null)"
+     data-accordion-group
+     data-border-color="@BorderColor"
+     data-variant="@Variant">
+    @Items
+</div>
+
+@code {
+    [Parameter]
+    public string BorderColor { get; set; } = "gray_200";
+
+    [Parameter]
+    public string Variant { get; set; } = "default";
+
+    [Parameter]
+    public RenderFragment? Items { get; set; }
+
+    private static readonly Dictionary<string, string> BorderClasses = new()
+    {
+        ["gray_200"] = "divide-y divide-gray-200",
+        ["gray_300"] = "divide-y divide-gray-300",
+        ["gray_400"] = "divide-y divide-gray-400",
+        ["primary_200"] = "divide-y divide-primary-200",
+        ["primary_300"] = "divide-y divide-primary-300",
+    };
+}

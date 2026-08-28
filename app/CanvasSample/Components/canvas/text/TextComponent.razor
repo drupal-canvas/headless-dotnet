@@ -1,0 +1,43 @@
+@* Named TextComponent because a C# property cannot share its class's name,
+   and the wire prop is "text"; registered explicitly in Program.cs under
+   the machine name "text". *@
+@namespace CanvasSample.Canvas
+
+@if (!string.IsNullOrEmpty(Text.Value))
+{
+    <div class="@Css.Cx(
+            "my-8",
+            Sizes.GetValueOrDefault(TextSize),
+            TextColor == "light" ? "!text-white" : "!text-black",
+            TextShadow is { Length: > 0 } ? Shadows.GetValueOrDefault(TextShadow) : null)">@Text</div>
+}
+
+@code {
+    [Parameter]
+    public MarkupString Text { get; set; }
+
+    [Parameter]
+    public string TextSize { get; set; } = "normal";
+
+    [Parameter]
+    public string TextColor { get; set; } = "dark";
+
+    [Parameter]
+    public string? TextShadow { get; set; }
+
+    private static readonly Dictionary<string, string> Sizes = new()
+    {
+        ["extra_small"] = "text-xs",
+        ["small"] = "text-sm",
+        ["normal"] = "text-base/6",
+        ["large"] = "text-lg/8",
+        ["extra_large"] = "text-xl/8",
+    };
+
+    private static readonly Dictionary<string, string> Shadows = new()
+    {
+        ["light"] = "text-shadow-sm",
+        ["medium"] = "text-shadow-md",
+        ["heavy"] = "text-shadow-lg",
+    };
+}

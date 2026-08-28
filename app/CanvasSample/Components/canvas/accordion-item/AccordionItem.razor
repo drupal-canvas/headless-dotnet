@@ -1,0 +1,78 @@
+@namespace CanvasSample.Canvas
+@using System.Text.RegularExpressions
+
+<div class="w-full"
+     data-accordion-item
+     data-default-open="@(DefaultOpen ? "true" : "false")"
+     id="@AnchorId">
+    @{
+        var safeId = Regex.Replace((AnchorId ?? Title ?? string.Empty).ToLowerInvariant(), "[^a-z0-9]+", "-");
+        var buttonId = $"accordion-item-button-{safeId}";
+        var panelId = $"accordion-item-panel-{safeId}";
+    }
+    @HeadingTag(
+        @<button aria-controls="@panelId"
+                 aria-expanded="@(DefaultOpen ? "true" : "false")"
+                 class="flex w-full items-center gap-3 text-left font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+                 data-accordion-button
+                 id="@buttonId"
+                 type="button">
+            <span data-bordered-icon class="relative hidden size-3.5 shrink-0 items-center justify-center">
+                <svg data-plus-icon aria-hidden="true" class="block size-3.5" fill="none" viewBox="0 0 24 24">
+                    <path d="M5 12h14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    <path d="M12 5v14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                </svg>
+                <svg data-minus-icon aria-hidden="true" class="hidden size-3.5" fill="none" viewBox="0 0 24 24">
+                    <path d="M5 12h14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                </svg>
+            </span>
+            <span>@Title</span>
+            <svg data-chevron-icon aria-hidden="true"
+                 class="@Css.Cx("size-4 shrink-0 transition-transform duration-300", DefaultOpen ? "rotate-180" : "rotate-0")"
+                 fill="none" viewBox="0 0 24 24">
+                <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+            </svg>
+        </button>)
+    <div aria-hidden="@(DefaultOpen ? "false" : "true")"
+         aria-labelledby="@buttonId"
+         class="@Css.Cx(
+             "grid w-full transition-[grid-template-rows] duration-300 ease-in-out",
+             DefaultOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]")"
+         data-accordion-content
+         id="@panelId"
+         role="region">
+        <div class="min-h-0 overflow-hidden">
+            <div class="pb-4 text-gray-700" data-accordion-content-body>
+                @Content
+            </div>
+        </div>
+    </div>
+</div>
+@* Module scripts dedupe by URL, so every item may emit the tag; the script
+   itself guards per-item with data-initialized, like the Astro original. *@
+<script type="module" src="/js/accordion.js"></script>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string HeadingElement { get; set; } = "h3";
+
+    [Parameter]
+    public bool DefaultOpen { get; set; }
+
+    [Parameter]
+    public string? AnchorId { get; set; }
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+
+    private RenderFragment HeadingTag(RenderFragment child) => builder =>
+    {
+        builder.OpenElement(0, HeadingElement);
+        builder.AddAttribute(1, "class", "m-0");
+        builder.AddContent(2, child);
+        builder.CloseElement();
+    };
+}

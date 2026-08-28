@@ -1,0 +1,17 @@
+@namespace CanvasSample.Canvas
+
+@if (Image?.Src is { Length: > 0 })
+{
+    <div class="align-center flex max-h-33 max-w-50 flex-col justify-center gap-4 rounded-2xl p-6 leading-[normal]"
+         style="background-color: @BackgroundColor">
+        <img src="@Image.Src" alt="@(Image.Alt ?? string.Empty)" width="@Image.Width" height="@Image.Height" class="h-auto w-50 object-contain" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string BackgroundColor { get; set; } = "#F1F5F9";
+
+    [Parameter]
+    public CanvasImage? Image { get; set; }
+}

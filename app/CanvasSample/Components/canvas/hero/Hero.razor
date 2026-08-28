@@ -1,19 +1,108 @@
-<section class="hero">
-    <h1>@Heading</h1>
-    @if (!string.IsNullOrEmpty(Subheading))
-    {
-        <p class="hero-sub">@Subheading</p>
-    }
-    <div class="hero-content">@Content</div>
-</section>
+@namespace CanvasSample.Canvas
+
+<div class="flex min-h-[672px] w-full justify-start bg-cover bg-center bg-no-repeat"
+     style="@(BackgroundImage?.Src is { Length: > 0 } ? $"background-image: url({BackgroundImage.Src})" : null)">
+    <div class="@Css.Cx("align-center h-full w-full px-8 py-16", DarkenImage ? "backdrop-brightness-75" : null)">
+        <div class="flex w-full justify-start bg-cover bg-center bg-no-repeat py-24">
+            <div class="mx-6 flex w-full items-center justify-center">
+                <div class="@Css.Cx("mx-auto flex w-full max-w-[1360px] gap-8 md:items-center", Layouts.GetValueOrDefault(Layout))">
+                    <div class="flex w-full flex-col items-start justify-center gap-4 md:w-1/2">
+                        <div class="mb-4">
+                            @if (!string.IsNullOrEmpty(PreHeading) || !string.IsNullOrEmpty(Heading))
+                            {
+                                <div class="dark flex w-full flex-col items-start text-left">
+                                    @if (!string.IsNullOrEmpty(PreHeading))
+                                    {
+                                        <div class="@Css.Cx(
+                                                "mb-4 font-bold",
+                                                PreHeadingSizes.GetValueOrDefault(HeadingSize),
+                                                TextColor == "light" ? "text-primary-light" : "text-primary-dark",
+                                                "text-shadow-md")">@PreHeading</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Heading))
+                                    {
+                                        @HeadingTag
+                                    }
+                                </div>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(Text.Value))
+                        {
+                            <div class="@Css.Cx(
+                                    "my-8 mb-4 text-lg/8 text-shadow-md",
+                                    TextColor == "light" ? "!text-white" : "!text-black")">@Text</div>
+                        }
+                        <div class="flex w-full min-w-3xs gap-4">@Buttons</div>
+                    </div>
+                    <div class="flex w-full items-center md:w-1/2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    [Parameter]
+    public CanvasImage? BackgroundImage { get; set; }
+
+    [Parameter]
+    public string Layout { get; set; } = "left_aligned";
+
+    [Parameter]
+    public string? PreHeading { get; set; }
+
+    [Parameter]
+    public string HeadingElement { get; set; } = "h2";
+
+    [Parameter]
+    public string HeadingSize { get; set; } = "large";
+
     [Parameter]
     public string? Heading { get; set; }
 
     [Parameter]
-    public string? Subheading { get; set; }
+    public MarkupString Text { get; set; }
 
     [Parameter]
-    public RenderFragment? Content { get; set; }
+    public string TextColor { get; set; } = "dark";
+
+    [Parameter]
+    public bool DarkenImage { get; set; }
+
+    private static readonly Dictionary<string, string> Layouts = new()
+    {
+        ["text_image"] = "flex-col md:flex-row",
+        ["image_text"] = "flex-col md:flex-row-reverse",
+    };
+
+    private static readonly Dictionary<string, string> HeadingSizes = new()
+    {
+        ["small"] = "text-lg",
+        ["medium"] = "text-2xl",
+        ["large"] = "text-4xl",
+        ["extra_large"] = "text-6xl",
+    };
+
+    private static readonly Dictionary<string, string> PreHeadingSizes = new()
+    {
+        ["small"] = "text-xs",
+        ["medium"] = "text-sm",
+        ["large"] = "text-base",
+        ["extra_large"] = "text-lg",
+    };
+
+    [Parameter]
+    public RenderFragment? Buttons { get; set; }
+
+    private RenderFragment HeadingTag => builder =>
+    {
+        builder.OpenElement(0, HeadingElement);
+        builder.AddAttribute(1, "class", Css.Cx(
+            "leading-[normal] font-bold text-balance",
+            HeadingSizes.GetValueOrDefault(HeadingSize),
+            TextColor == "light" ? "text-white" : "text-black",
+            "text-shadow-md"));
+        builder.AddContent(2, Heading);
+        builder.CloseElement();
+    };
 }

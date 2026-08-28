@@ -1,0 +1,13 @@
+@namespace CanvasSample.Canvas
+
+<section class="@Css.Cx("mx-auto my-8 px-4", Width == "wide" ? "max-w-4xl" : "max-w-2xl")">
+    @Content
+</section>
+
+@code {
+    [Parameter]
+    public string Width { get; set; } = "normal";
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+}
