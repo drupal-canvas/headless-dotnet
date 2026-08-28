@@ -1,7 +1,6 @@
 # Drupal Canvas headless template for .NET
 
-> [!NOTE]
-> This is an experimental project.
+> [!NOTE] This is an experimental project.
 
 An experimental ASP.NET Core / Blazor starter for frontends built for
 [Canvas Headless](https://git.drupalcode.org/project/canvas/-/tree/1.x/modules/canvas_headless).
@@ -45,11 +44,10 @@ CSS 4; the generated file is committed).
 - **The component metadata endpoint** Canvas syncs the library from, protected
   by proof-by-redemption.
 - **Component preview thumbnails**: the editor renders each library entry
-  through an isolated one-component document
-  (`/api/canvas/component-preview`, draft-session-only). The app names the
-  stylesheets that document loads via
-  `CanvasHeadlessOptions.ComponentPreviewStylesheets`, so thumbnails match
-  how components look on pages.
+  through an isolated one-component document (`/api/canvas/component-preview`,
+  draft-session-only). The app names the stylesheets that document loads via
+  `CanvasHeadlessOptions.ComponentPreviewStylesheets`, so thumbnails match how
+  components look on pages.
 
 ## The packages
 
@@ -82,11 +80,6 @@ contract stopping the two protocol implementations from drifting.
 dotnet test packages/DrupalCanvas.Headless.slnx
 ```
 
-## Status
+## Credits
 
-Not yet done:
-
-- In-place data refresh on Canvas auto-save (the client glue reloads the
-  document; Blazor enhanced navigation could do better).
-- Live verification of in-place renewal (the token must approach expiry; the
-  flow is covered by the ported unit and endpoint tests).
+Built at [Acquia](https://www.acquia.com).
