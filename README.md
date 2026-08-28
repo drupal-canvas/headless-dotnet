@@ -1,6 +1,7 @@
 # Drupal Canvas headless template for .NET
 
-> [!NOTE] This is an experimental project.
+> [!NOTE]
+> This is an experimental project.
 
 An experimental ASP.NET Core / Blazor starter for frontends built for
 [Canvas Headless](https://git.drupalcode.org/project/canvas/-/tree/1.x/modules/canvas_headless).
