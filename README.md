@@ -1,127 +1,98 @@
-# Drupal Canvas Headless SDK for .NET
+# Drupal Canvas headless template for .NET
 
-A C# port of the server side of the [Drupal Canvas Headless
-SDK](https://git.drupalcode.org/project/canvas) (`@drupal-canvas/headless`),
-plus an ASP.NET Core / Blazor binding — the .NET counterpart of the
-`headless-next`, `headless-astro`, `headless-nuxt`, and
-`headless-tanstack-start` adapters.
+An ASP.NET Core / Blazor starter for decoupled [Drupal
+Canvas](https://git.drupalcode.org/project/canvas) frontends — the .NET
+counterpart of the JavaScript starters in canvas-headless-templates. The
+Canvas Headless module lets the Drupal Canvas editor embed this app, so
+editors preview their work — draft content included — rendered by the app
+itself, with the app's components registered in Canvas.
 
-The Canvas Headless module lets the Drupal Canvas editor embed your frontend
-app, so editors preview their work — draft content included — rendered by the
-app itself, with the app's components registered in Canvas. This repository
-makes ASP.NET Core apps (Blazor static SSR) such a frontend.
+This repository **is** the template: the app lives at the root, and the SDK
+packages powering it live under [`packages/`](#the-sdk-packages).
 
-## Packages
-
-### `DrupalCanvas.Headless`
-
-The framework-agnostic protocol core, a behavior-for-behavior port of the npm
-package's server side:
-
-- **Draft session flows** (`DraftServer`): activation (RFC 7523 jwt-bearer
-  assertion redemption at Drupal's token endpoint), PKCE-bound in-place
-  renewal with identity pinning, and exit. All state lives in partitioned
-  (CHIPS) cross-site cookies, reached through an `IDraftServerAdapter`.
-- **Content fetching** (`ContentApi`, `DraftServer.FetchPageAsync`): Drupal's
-  rendered-content endpoint, carrying the session's user-bound bearer token
-  while the draft session is live; expired sessions fall back to anonymous
-  fetching, surfaced by the draft indicator rather than silently downgraded.
-- **Rendered-page contracts** (`Page`, `PageRedirect`,
-  `CanvasComponentTreeElement`, `CanvasSlot`) matching the wire JSON exactly.
-- **Render helpers** (`CanvasRender`) and the **comment-marker format**
-  (`CommentMarkers`) shared with `@drupal-canvas/preview-geometry`.
-- **CSP helpers** (`Csp`): frame-ancestors resolution and non-destructive
-  merging.
-- **Component metadata** (`ComponentDiscovery`): `canvas.config.json` +
-  `component.yml` discovery with JSON-typed YAML parsing, producing the
-  payload the components endpoint serves (payload version 1).
-
-### `DrupalCanvas.Headless.AspNetCore`
-
-The ASP.NET Core binding:
-
-- `AddDrupalCanvasHeadless()` / `MapDrupalCanvasHeadless()`: DI registration
-  and the conventional routes (`GET /api/draft`, `POST /api/draft/renew`,
-  `POST /api/disable-draft`, `GET|OPTIONS /api/canvas/components`).
-- `UseDrupalCanvasFrameAncestors()`: CSP middleware.
-- `CanvasComponentTree`: the Blazor renderer for Canvas component trees —
-  static SSR, editor comment markers, empty slot/region placeholders, prop
-  binding onto `[Parameter]` properties (JSON → CLR, `MarkupString` for HTML
-  props), and wire slots bound to `RenderFragment` parameters.
-- `AddDrupalCanvasComponents()`: the component registry (explicit or
-  convention-based via `component.yml` machine names ↔ component class names).
-- `DraftSession`: the Blazor component rendering `<canvas-draft-session>`,
-  whose browser implementation ships in this package's static assets — the
-  npm package's client entry served verbatim (see
-  `scripts/sync-client-assets.sh`; pinned at `@drupal-canvas/headless@0.5.0`).
-
-## Usage sketch
-
-```csharp
-builder.Configuration.AddDotEnvFile(); // reads .env; real env vars win
-builder.Services.AddDrupalCanvasHeadless(options =>
-    options.BaseUrl = builder.Configuration["CANVAS_SITE_URL"]);
-builder.Services.AddDrupalCanvasComponents(components =>
-    components.AddFromAssembly(typeof(Program).Assembly, builder.Environment.ContentRootPath));
-
-var app = builder.Build();
-app.UseDrupalCanvasFrameAncestors();
-app.MapDrupalCanvasHeadless();
-app.MapRazorComponents<App>();
-```
-
-In a catch-all page:
-
-```razor
-@code {
-    var result = await Server.FetchPageAsync(path);
-}
-@if (result is Page page)
-{
-    <CanvasComponentTree Tree="page.Content" />
-}
-<DraftSession />
-```
-
-## Conformance testing
-
-`tests/DrupalCanvas.Headless.Tests` ports the JavaScript SDK's
-`flows.test.ts` scenario-for-scenario (plus draft-data, PKCE, CSP, render, and
-discovery suites); `tests/DrupalCanvas.Headless.AspNetCore.Tests` covers the
-Blazor renderer's marker output and the mounted endpoints end-to-end,
-including the CHIPS `Partitioned` cookie attributes. **Keep the ported suite
-in step with the JS one** — it is the contract stopping the two protocol
-implementations from drifting.
+## Getting started
 
 ```bash
-dotnet test
+cp .env.example .env   # point CANVAS_SITE_URL at your Drupal site
+dotnet run
+```
+
+The app serves on http://localhost:5210: any Drupal path (e.g. `/node/1`)
+resolves through the Canvas content API and renders server-side. Register
+the URL as a headless frontend in the Canvas editor's *Headless frontends*
+screen and the editor embeds the app for drag-and-drop editing, syncing the
+component library from `Components/canvas/`.
+
+Requires the .NET 10 SDK. Node.js is only needed when changing styles:
+`npm install && npm run build:css` regenerates `wwwroot/css/app.css`
+(Tailwind CSS 4; the generated file is committed).
+
+## What's included
+
+- **Catch-all Drupal page rendering** (`Program.cs`): every request resolves
+  through Drupal, with redirects, document head, and 404s handled.
+- **The component library** (`Components/canvas/`): the same selected
+  components as the JavaScript templates, one directory per component with
+  its framework-neutral `component.yml` metadata and a Blazor `.razor`
+  implementation. Naming note: where a component carries a prop named
+  exactly like itself (`heading`, `image`, `text`, `video`), the class is
+  `*Component` and registered explicitly in `Program.cs`, because a C#
+  property cannot share its class's name.
+- **Draft preview** end to end: activation, PKCE-bound renewal, exit, CHIPS
+  cookies for the cross-site editor iframe, editor geometry markers, and the
+  `DraftBanner` session chrome.
+- **The component metadata endpoint** Canvas syncs the library from,
+  protected by proof-by-redemption.
+
+## The SDK packages
+
+`packages/` holds the C# port of the `@drupal-canvas/headless` server core
+and its ASP.NET Core binding — the layer the template builds on. They are
+project-referenced for now and will move to NuGet references once published
+(and then likely to their own repository):
+
+- **`DrupalCanvas.Headless`** — the framework-agnostic protocol core: draft
+  session flows (RFC 7523 assertion redemption at Drupal's token endpoint),
+  draft-aware content fetching, rendered-page contracts, render helpers and
+  the editor comment-marker format, CSP merging, and `component.yml`
+  discovery.
+- **`DrupalCanvas.Headless.AspNetCore`** — endpoints
+  (`MapDrupalCanvasHeadless()`), DI (`AddDrupalCanvasHeadless()`,
+  `AddDrupalCanvasComponents()`), frame-ancestors middleware, `.env`
+  configuration, the Blazor `CanvasComponentTree` renderer, and the npm
+  package's browser client served as static assets (pinned at
+  `@drupal-canvas/headless@0.5.0`; see `scripts/sync-client-assets.sh`).
+
+### Conformance testing
+
+`packages/tests/DrupalCanvas.Headless.Tests` ports the JavaScript SDK's
+`flows.test.ts` scenario-for-scenario; the AspNetCore suite covers the
+renderer's marker output and the endpoints end-to-end, including the CHIPS
+`Partitioned` cookie attributes. **Keep the ported suite in step with the JS
+one** — it is the contract stopping the two protocol implementations from
+drifting.
+
+```bash
+dotnet test packages/DrupalCanvas.Headless.slnx
 ```
 
 ## Status and roadmap
 
-Done: protocol core with ported conformance suite; ASP.NET Core endpoints,
-middleware, renderer, registry, client assets; the `app/CanvasSample`
-app.
-
 Verified live against a Drupal Canvas Headless site inside the Canvas
-editor (via `app/CanvasSample`): component sync, draft activation from
-a Drupal-minted assertion, CHIPS cookies in the cross-site editor iframe,
-marker-driven geometry (region and slot drop targets, component selection
-overlays), prop editing with auto-save refresh of working copies,
-publishing with marker-free anonymous output, and the exit flow deleting
-partitioned cookies in a real browser.
+editor: component sync, draft activation from a Drupal-minted assertion,
+CHIPS cookies in the cross-site editor iframe, marker-driven geometry,
+prop editing with auto-save refresh of working copies, publishing with
+marker-free anonymous output, and the exit flow deleting partitioned
+cookies in a real browser.
 
 Not yet done:
 
-- The `dotnet` template in
-  [canvas-headless-templates](../canvas-headless-templates) (Blazor Web App,
-  Nebula components as `.razor`, Tailwind, catch-all Drupal page route).
 - The isolated one-component preview document
   (`/api/canvas/component-preview`, for editor thumbnails) — the core method
-  `DraftServer.FetchComponentPreviewAsync` exists; the route and minimal HTML
-  document do not.
-- In-place data refresh on Canvas auto-save (the static-assets glue reloads
-  the document; Blazor enhanced navigation could do better).
+  `DraftServer.FetchComponentPreviewAsync` exists; the route and minimal
+  HTML document do not.
+- In-place data refresh on Canvas auto-save (the client glue reloads the
+  document; Blazor enhanced navigation could do better).
 - Live verification of in-place renewal (the token must approach expiry;
   the flow is covered by the ported unit and endpoint tests).
-- NuGet packaging/publishing metadata and CI.
+- NuGet packaging/publishing for the SDK packages, and CI.

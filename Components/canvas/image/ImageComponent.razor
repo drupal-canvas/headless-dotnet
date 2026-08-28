@@ -1,0 +1,14 @@
+@* Named ImageComponent because a C# property cannot share its class's name,
+   and the wire prop is "image"; registered explicitly in Program.cs under
+   the machine name "image". *@
+@namespace CanvasApp.Canvas
+
+@if (Image?.Src is { Length: > 0 })
+{
+    <img src="@Image.Src" alt="@(Image.Alt ?? string.Empty)" width="@Image.Width" height="@Image.Height" class="my-8 h-auto max-w-full" />
+}
+
+@code {
+    [Parameter]
+    public CanvasImage? Image { get; set; }
+}

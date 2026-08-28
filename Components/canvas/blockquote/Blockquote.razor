@@ -1,0 +1,39 @@
+@namespace CanvasApp.Canvas
+
+<div class="@Css.Cx(
+        "my-8 flex w-full flex-col leading-[normal]",
+        TextColor == "light" ? "text-white" : null)">
+    <div class="flex grow justify-center gap-6">
+        <div class="w-1 bg-gray-200"></div>
+        <div class="grow font-medium">
+            @if (!string.IsNullOrEmpty(Text.Value))
+            {
+                <div class="flex items-start self-stretch text-xl leading-8">@Text</div>
+            }
+            @if (!string.IsNullOrEmpty(Name))
+            {
+                <div class="flex items-end self-stretch pt-5 leading-6 font-bold whitespace-pre-wrap">@Name</div>
+            }
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <div class="@Css.Cx(
+                        "text-sm leading-5 whitespace-pre-wrap",
+                        TextColor == "light" ? "text-gray-200" : "text-gray-500")">@Title</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public MarkupString Text { get; set; }
+
+    [Parameter]
+    public string TextColor { get; set; } = "dark";
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+}

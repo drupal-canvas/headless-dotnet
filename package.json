@@ -1,0 +1,11 @@
+{
+  "name": "canvas-headless-dotnet",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i Styles/global.css -o wwwroot/css/app.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "tailwindcss": "^4.1.18"
+  }
+}

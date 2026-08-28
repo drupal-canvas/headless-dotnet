@@ -1,0 +1,14 @@
+@* Named VideoComponent because a C# property cannot share its class's name,
+   and the wire prop is "video"; registered explicitly in Program.cs under
+   the machine name "video". *@
+@namespace CanvasApp.Canvas
+
+<video class="w-full" controls>
+    <source src="@Video?.Src" />
+    <track kind="captions" />
+</video>
+
+@code {
+    [Parameter]
+    public CanvasVideo? Video { get; set; }
+}

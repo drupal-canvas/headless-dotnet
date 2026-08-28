@@ -1,0 +1,95 @@
+@namespace CanvasApp.Canvas
+
+<div class="mx-6 flex flex-col items-center gap-16">
+    @if (!string.IsNullOrEmpty(Heading))
+    {
+        <div class="@Css.Cx("dark flex w-full flex-col", Align.GetValueOrDefault(HeadingPosition))">
+            @if (!string.IsNullOrEmpty(PreHeading))
+            {
+                <div class="@Css.Cx(
+                        "mb-4 font-bold",
+                        PreHeadingSizes.GetValueOrDefault(HeadingSize),
+                        TextColor == "light" ? "text-primary-light" : "text-primary-dark")">@PreHeading</div>
+            }
+            @HeadingTag
+        </div>
+    }
+    <div class="mx-auto w-full max-w-[1360px] px-6">
+        <div class="@Css.Cx("grid w-full gap-4", Layouts.GetValueOrDefault(Layout ?? string.Empty))">
+            @Content
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? PreHeading { get; set; }
+
+    [Parameter]
+    public string? Heading { get; set; }
+
+    [Parameter]
+    public string HeadingSize { get; set; } = "large";
+
+    [Parameter]
+    public string TextColor { get; set; } = "dark";
+
+    [Parameter]
+    public string HeadingPosition { get; set; } = "center_aligned";
+
+    [Parameter]
+    public string HeadingElement { get; set; } = "h2";
+
+    [Parameter]
+    public string? Layout { get; set; }
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+
+    private static readonly Dictionary<string, string> HeadingSizes = new()
+    {
+        ["small"] = "text-lg",
+        ["medium"] = "text-2xl",
+        ["large"] = "text-4xl",
+        ["extra_large"] = "text-6xl",
+    };
+
+    private static readonly Dictionary<string, string> PreHeadingSizes = new()
+    {
+        ["small"] = "text-xs",
+        ["medium"] = "text-sm",
+        ["large"] = "text-base",
+        ["extra_large"] = "text-lg",
+    };
+
+    private static readonly Dictionary<string, string> Align = new()
+    {
+        ["left_aligned"] = "items-start text-left",
+        ["center_aligned"] = "items-center text-center",
+        ["right_aligned"] = "items-end text-right",
+    };
+
+    private static readonly Dictionary<string, string> Layouts = new()
+    {
+        ["50-50"] = "md:grid-cols-[1fr_1fr]",
+        ["33-33-33"] = "md:grid-cols-[1fr_1fr_1fr]",
+        ["75-25"] = "md:grid-cols-[3fr_1fr]",
+        ["25-75"] = "md:grid-cols-[1fr_3fr]",
+        ["67-33"] = "md:grid-cols-[2fr_1fr]",
+        ["33-67"] = "md:grid-cols-[1fr_2fr]",
+        ["50-25-25"] = "md:grid-cols-[2fr_1fr_1fr]",
+        ["25-25-50"] = "md:grid-cols-[1fr_1fr_2fr]",
+        ["25-25-25-25"] = "sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr_1fr]",
+    };
+
+    private RenderFragment HeadingTag => builder =>
+    {
+        builder.OpenElement(0, HeadingElement);
+        builder.AddAttribute(1, "class", Css.Cx(
+            "leading-[normal] font-bold text-balance",
+            HeadingSizes.GetValueOrDefault(HeadingSize),
+            TextColor == "light" ? "text-white" : "text-black"));
+        builder.AddContent(2, Heading);
+        builder.CloseElement();
+    };
+}

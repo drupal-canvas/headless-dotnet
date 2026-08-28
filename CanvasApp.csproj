@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <!-- The SDK packages are sibling projects, not app sources. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);packages/**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="packages/DrupalCanvas.Headless.AspNetCore/DrupalCanvas.Headless.AspNetCore.csproj" />
+  </ItemGroup>
+
+</Project>

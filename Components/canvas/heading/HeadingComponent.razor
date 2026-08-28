@@ -1,0 +1,87 @@
+@* Named HeadingComponent because a C# property cannot share its class's
+   name, and the wire prop is "heading"; registered explicitly in Program.cs
+   under the machine name "heading". *@
+@namespace CanvasApp.Canvas
+
+@if (!string.IsNullOrEmpty(PreHeading) || !string.IsNullOrEmpty(Heading))
+{
+    <div class="@Css.Cx("dark flex w-full flex-col", Align.GetValueOrDefault(Layout))">
+        @if (!string.IsNullOrEmpty(PreHeading))
+        {
+            <div class="@Css.Cx(
+                    "mb-4 font-bold",
+                    PreHeadingSizes.GetValueOrDefault(HeadingSize),
+                    TextColor == "light" ? "text-primary-light" : "text-primary-dark",
+                    TextShadow is { Length: > 0 } ? Shadows.GetValueOrDefault(TextShadow) : null)">@PreHeading</div>
+        }
+        @if (!string.IsNullOrEmpty(Heading))
+        {
+            @HeadingTag
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? PreHeading { get; set; }
+
+    [Parameter]
+    public string? Heading { get; set; }
+
+    [Parameter]
+    public string TextColor { get; set; } = "dark";
+
+    [Parameter]
+    public string HeadingElement { get; set; } = "h2";
+
+    [Parameter]
+    public string HeadingSize { get; set; } = "extra_large";
+
+    [Parameter]
+    public string Layout { get; set; } = "left_aligned";
+
+    [Parameter]
+    public string? TextShadow { get; set; }
+
+    private static readonly Dictionary<string, string> Sizes = new()
+    {
+        ["small"] = "text-lg",
+        ["medium"] = "text-2xl",
+        ["large"] = "text-4xl",
+        ["extra_large"] = "text-6xl",
+    };
+
+    private static readonly Dictionary<string, string> PreHeadingSizes = new()
+    {
+        ["small"] = "text-xs",
+        ["medium"] = "text-sm",
+        ["large"] = "text-base",
+        ["extra_large"] = "text-lg",
+    };
+
+    private static readonly Dictionary<string, string> Align = new()
+    {
+        ["left_aligned"] = "items-start text-left",
+        ["center_aligned"] = "items-center text-center",
+        ["right_aligned"] = "items-end text-right",
+    };
+
+    private static readonly Dictionary<string, string> Shadows = new()
+    {
+        ["light"] = "text-shadow-sm",
+        ["medium"] = "text-shadow-md",
+        ["heavy"] = "text-shadow-lg",
+    };
+
+    private RenderFragment HeadingTag => builder =>
+    {
+        builder.OpenElement(0, HeadingElement);
+        builder.AddAttribute(1, "class", Css.Cx(
+            "leading-[normal] font-bold text-balance",
+            Sizes.GetValueOrDefault(HeadingSize),
+            TextColor == "light" ? "text-white" : "text-black",
+            TextShadow is { Length: > 0 } ? Shadows.GetValueOrDefault(TextShadow) : null));
+        builder.AddContent(2, Heading);
+        builder.CloseElement();
+    };
+}

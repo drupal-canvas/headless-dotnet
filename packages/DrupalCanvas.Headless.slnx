@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="../CanvasApp.csproj" />
+  <Project Path="DrupalCanvas.Headless.AspNetCore/DrupalCanvas.Headless.AspNetCore.csproj" />
+  <Project Path="DrupalCanvas.Headless/DrupalCanvas.Headless.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/DrupalCanvas.Headless.AspNetCore.Tests/DrupalCanvas.Headless.AspNetCore.Tests.csproj" />
+    <Project Path="tests/DrupalCanvas.Headless.Tests/DrupalCanvas.Headless.Tests.csproj" />
+  </Folder>
+</Solution>

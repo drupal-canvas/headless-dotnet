@@ -1,0 +1,40 @@
+@namespace CanvasApp.Canvas
+
+<div class="mx-auto w-full max-w-[1360px] px-6">
+    <div class="@Css.Cx("grid w-full", Layouts.GetValueOrDefault(Layout), Gaps.GetValueOrDefault(Gap))">
+        @Content
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Layout { get; set; } = "33-33-33";
+
+    [Parameter]
+    public string Gap { get; set; } = "medium";
+
+    [Parameter]
+    public RenderFragment? Content { get; set; }
+
+    private static readonly Dictionary<string, string> Layouts = new()
+    {
+        ["50-50"] = "md:grid-cols-[1fr_1fr]",
+        ["33-33-33"] = "md:grid-cols-[1fr_1fr_1fr]",
+        ["75-25"] = "md:grid-cols-[3fr_1fr]",
+        ["25-75"] = "md:grid-cols-[1fr_3fr]",
+        ["67-33"] = "md:grid-cols-[2fr_1fr]",
+        ["33-67"] = "md:grid-cols-[1fr_2fr]",
+        ["50-25-25"] = "md:grid-cols-[2fr_1fr_1fr]",
+        ["25-25-50"] = "md:grid-cols-[1fr_1fr_2fr]",
+        ["25-25-25-25"] = "sm:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr_1fr]",
+    };
+
+    private static readonly Dictionary<string, string> Gaps = new()
+    {
+        ["extra_small"] = "gap-1",
+        ["small"] = "gap-2",
+        ["medium"] = "gap-4",
+        ["large"] = "gap-6",
+        ["extra_large"] = "gap-8",
+    };
+}
