@@ -100,11 +100,11 @@ dotnet test
 ## Status and roadmap
 
 Done: protocol core with ported conformance suite; ASP.NET Core endpoints,
-middleware, renderer, registry, client assets; the `samples/CanvasSample`
+middleware, renderer, registry, client assets; the `app/CanvasSample`
 app.
 
 Verified live against a Drupal Canvas Headless site inside the Canvas
-editor (via `samples/CanvasSample`): component sync, draft activation from
+editor (via `app/CanvasSample`): component sync, draft activation from
 a Drupal-minted assertion, CHIPS cookies in the cross-site editor iframe,
 marker-driven geometry (region and slot drop targets, component selection
 overlays), prop editing with auto-save refresh of working copies,
