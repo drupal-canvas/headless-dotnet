@@ -58,6 +58,7 @@ The ASP.NET Core binding:
 ## Usage sketch
 
 ```csharp
+builder.Configuration.AddDotEnvFile(); // reads .env; real env vars win
 builder.Services.AddDrupalCanvasHeadless(options =>
     options.BaseUrl = builder.Configuration["CANVAS_SITE_URL"]);
 builder.Services.AddDrupalCanvasComponents(components =>

@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Loads CANVAS_SITE_URL (and friends) from .env; see .env.example. Real
+// environment variables win over the file.
+builder.Configuration.AddDotEnvFile();
+
 builder.Services.AddRazorComponents();
 builder.Services.AddDrupalCanvasHeadless(options =>
     options.BaseUrl = builder.Configuration["CANVAS_SITE_URL"]);

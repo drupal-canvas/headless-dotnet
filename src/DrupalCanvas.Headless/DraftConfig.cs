@@ -22,7 +22,7 @@ public sealed record DraftConfig
         var resolved = baseUrl ?? Environment.GetEnvironmentVariable("CANVAS_SITE_URL");
         if (string.IsNullOrEmpty(resolved))
         {
-            throw new InvalidOperationException("CANVAS_SITE_URL must be set.");
+            throw new InvalidOperationException("CANVAS_SITE_URL must be set. See .env.example.");
         }
         return new DraftConfig { BaseUrl = resolved.TrimEnd('/') };
     }
